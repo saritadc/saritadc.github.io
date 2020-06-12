@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="./main.css">
+	    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	    <title>Portfolio</title>
+    </head>
+    <body>
+        <div id="loading">Loading...</div>
+        <div class="main content" id="maincontent" hidden>
+            <img height="300" width="300" id="profileImage" class="profile_pic">
+            <h1 id="fullName"></h1>
+            <h3 id="bio"></h3>
+            <p id="followerInformation"></p>
+            <p>Check me on <a id="githublink">Github</a></p>
+            <h5 id="repos">List of repos</h5>
+            
+            <a class="twitter-timeline" href="https://twitter.com/dsarritta?ref_src=twsrc%5Etfw">Tweets by dsarritta</a> 
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            
+
+            <script>
+                const url = "https://api.github.com/users/saritadc"      
+                fetch(url)
+                .then(Response => Response.json())
+                .then(function(data){
+                        console.log(data)
+                        
+                      
+                        let followerCount = data['followers']
+                        let followerInfo =  `Follwed by ${followerCount} people`
+                        document.getElementById('profileImage').src = data['avatar_url']
+                        document.getElementById('fullName').textContent = data['name']
+                        document.getElementById('bio').textContent = data['bio']
+                        document.getElementById('followerInformation').textContent = followerInfo
+                        document.getElementById('githublink').href = data['html_url']
+                        document.getElementById('maincontent').hidden = false
+                        document.getElementById('loading').hidden = true
+                        
+                        let repos = data['repos_url']
+                        console.log(repos)
+                        fetch(repos)
+                        .then(res=>res.json())
+                        .then(data=> {
+                            let output = '<h1>My Repositories</h1>'
+                            data.forEach(function(repoList){
+                                output += `
+                                    <div>
+                                        <h3>${repoList.full_name}</h3>
+                                    </div>
+                                `
+                            })
+                            document.getElementById('repos').innerHTML = output
+                        })
+                    })
+            </script>
+        </div>
+    </body>
+</html>
